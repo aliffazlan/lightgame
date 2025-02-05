@@ -1,19 +1,36 @@
-int RESETPIN = 0;
-int DSLINITPIN = 0;
-int S0PIN = 0;
-int S1PIN = 0;
-int CLOCKPIN = 0;
-int BUTTONPIN = 0;
+const int RESETPIN = 0;
+const int DSLINITPIN = 0;
+const int S0PIN = 0;
+const int S1PIN = 0;
+const int CLOCKPIN = 0;
+const int BUTTONPIN = 0;
+
+const int LED_COUNT = 45;
+const int INITIAL_DELAY = 50;
+const int TIME_DELTA = 10;
+const int INITIAL_STEPS = 60;
+
+const int CLOCK_DELAY = 10;
 
 enum States { IDLE, STARTUP, ACTIVE, SLOW };
 States state = IDLE;
 
-unsigned int timeDelay = 10;       
-const unsigned int MAX_DELAY = 1000; 
+enum Modes { SKILL, RIG_LOSE, RIG_WIN };
+Modes rigMode = SKILL;
+
+enum Color { RED, YELLOW, GREEN, BLUE };
+Color rigWinColor;
+bool rigLoseColors[4];
+
+unsigned int timeDelay = INITIAL_DELAY;       
 
 const int totalLEDs = 45;          
 int ledPos = 0; 
 int direction = 1;
+
+int stepsLeft = 0;
+
+
 
 
 void setup() {
@@ -24,6 +41,8 @@ void setup() {
   pinMode(CLOCKPIN, OUTPUT);
   pinMode(BUTTONPIN, INPUT); 
 
+
+  rigMode = SKILL;
   resetGame();
 }
 
@@ -34,7 +53,7 @@ void loop() {
     case IDLE:
       if (buttonPressed()) {
         resetGame();
-        timeDelay = 10;
+        timeDelay = INITIAL_DELAY;
         state = STARTUP;
       }
       break;
@@ -50,21 +69,23 @@ void loop() {
       shiftLED();
       if (buttonPressed()) {
         state = SLOW;
+        stepsLeft = INITIAL_STEPS + getAdjustment(projectWinningLED(ledPos, direction));
       }
       break;
 
     case SLOW:
       shiftLED();
-      timeDelay += 10;
-      if (timeDelay >= MAX_DELAY) {
+      if (stepsLeft <= 0) {
         state = IDLE;
       }
+      stepsLeft -= 1;
+      timeDelay += TIME_DELTA;
       break;
   }
 }
 
 bool buttonPressed() {
-  if digitalRead(BUTTONPIN) {
+  if (digitalRead(BUTTONPIN)) {
     delay(50);
     return digitalRead(BUTTONPIN);
   }
@@ -72,9 +93,9 @@ bool buttonPressed() {
 }
 
 void clockPulse() {
-  delay(timeDelay);
+  delay(CLOCK_DELAY);
   digitalWrite(CLOCKPIN, HIGH);
-  delay(timeDelay);
+  delay(CLOCK_DELAY);
   digitalWrite(CLOCKPIN, LOW);
 }
 
@@ -135,3 +156,4 @@ void resetGame() {
   digitalWrite(RESETPIN, HIGH);
   delay(50);
 }
+
