@@ -11,6 +11,8 @@ const int INITIAL_DELAY = 12;
 const int TIME_DELTA = 5;
 const int INITIAL_STEPS = 40;
 
+const int STARTUPCOUNT = 7;
+
 enum States { IDLE, STARTUP, ACTIVE, SLOW };
 States state = IDLE;
 
@@ -56,7 +58,7 @@ void loop() {
     case IDLE:
       readInput();
       if (buttonPressed()) {
-        Serial.println("BUTTON");
+        //Serial.println("BUTTON");
         resetGame();
         timeDelay = INITIAL_DELAY;
         state = STARTUP;
@@ -65,23 +67,23 @@ void loop() {
       break;
 
     case STARTUP:
-      Serial.println("STARTUP");
+      //Serial.println("STARTUP");
       startupSequence();
       ledPos = 0;
       direction = 1;
       state = ACTIVE;
       digitalWrite(BUTTONLED, HIGH);
-      Serial.println("STARTUP FINISHED");
+      //Serial.println("STARTUP FINISHED");
       break;
 
     case ACTIVE:
       shiftLED();
       if (buttonPressed()) {
-        Serial.println("BUTTON");
+        //Serial.println("BUTTON");
         state = SLOW;
         stepsLeft = INITIAL_STEPS + getAdjustment(projectWinningLED(ledPos, direction)) - 1;
         digitalWrite(BUTTONLED, LOW);
-        Serial.println("SLOW");
+        //Serial.println("SLOW");
         
       }
       break;
@@ -91,7 +93,7 @@ void loop() {
       if (stepsLeft <= 0) {
         state = IDLE;
         digitalWrite(BUTTONLED, HIGH);
-        Serial.println("STOP");
+        //Serial.println("STOP");
       }
       stepsLeft -= 1;
       timeDelay += TIME_DELTA;
@@ -128,20 +130,28 @@ void setShiftRight() {
 
 
 void startupSequence() {
-  timeDelay = 8;
+  timeDelay = 6;
   digitalWrite(DSLINITPIN, HIGH);
   setShiftRight();
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < STARTUPCOUNT; i++) {
     clockPulse();
   }
   digitalWrite(DSLINITPIN, LOW);
-  for (int i = 0; i < totalLEDs - 6; i++) {
+  for (int j = 0; j < 2; j++) {
+    for (int i = 0; i < totalLEDs - STARTUPCOUNT - 1; i++) {
+    clockPulse();
+    }
+    setShiftLeft();
+    for (int i = 0; i < totalLEDs - STARTUPCOUNT - 1; i++) {
+      clockPulse();
+    }
+    setShiftRight();
+  }
+  for (int i = 0; i < totalLEDs + 1; i++) {
     clockPulse();
   }
-  setShiftLeft();
-  for (int i = 0; i < totalLEDs - 6; i++) {
-    clockPulse();
-  }
+  
+  
   delay(200);
 
   resetGame();
