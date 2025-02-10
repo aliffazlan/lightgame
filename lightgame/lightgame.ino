@@ -7,9 +7,9 @@ const int BUTTONPIN = 10;
 const int BUTTONLED = 9;
 
 const int LED_COUNT = 32;
-const int INITIAL_DELAY = 12;
-const int TIME_DELTA = 5;
-const int INITIAL_STEPS = 40;
+const int INITIAL_DELAY = 9;
+const int TIME_DELTA = 4;
+const int INITIAL_STEPS = 45;
 
 const int STARTUPCOUNT = 7;
 
@@ -130,26 +130,22 @@ void setShiftRight() {
 
 
 void startupSequence() {
-  timeDelay = 6;
+  timeDelay = 13;
   digitalWrite(DSLINITPIN, HIGH);
   setShiftRight();
   for (int i = 0; i < STARTUPCOUNT; i++) {
     clockPulse();
   }
   digitalWrite(DSLINITPIN, LOW);
-  for (int j = 0; j < 2; j++) {
-    for (int i = 0; i < totalLEDs - STARTUPCOUNT - 1; i++) {
-    clockPulse();
-    }
-    setShiftLeft();
-    for (int i = 0; i < totalLEDs - STARTUPCOUNT - 1; i++) {
-      clockPulse();
-    }
-    setShiftRight();
-  }
-  for (int i = 0; i < totalLEDs + 1; i++) {
+
+  for (int i = 0; i < (totalLEDs / 2) - (STARTUPCOUNT / 2); i++) {
     clockPulse();
   }
+  delay(1000);
+  for (int i = 0; i < (totalLEDs / 2) + (STARTUPCOUNT / 2) + 2; i++) {
+    clockPulse();
+  }
+
   
   
   delay(200);
