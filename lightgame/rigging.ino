@@ -19,12 +19,13 @@ int projectWinningLED(int current, int direction) {
 }
 
 Color indexToColor(int index) {
-    int center = abs(index - 22);
-
-    if (center > 12) return RED;
-    else if (center > 4) return YELLOW;
-    else if (center >= 1)  return GREEN; 
-    else if (center == 0)  return BLUE;
+    if (index <= 6) return RED;
+    else if (index <= 11) return YELLOW;
+    else if (index <= 14) return GREEN;
+    else if (index <= 16) return BLUE;
+    else if (index <= 19) return GREEN;
+    else if (index <= 24) return YELLOW;
+    else return RED;
 
 }
 
@@ -32,9 +33,10 @@ Color indexToColor(int index) {
 int getAdjustment(int projection) {
   int adjustment = 0;
   while (true) {
+    adjustment += 1;
     if (isViable(projection + adjustment)) return adjustment;
     if (isViable(projection - adjustment)) return -adjustment;
-    adjustment += 1;
+    
   }
   
 }
@@ -44,5 +46,5 @@ bool isViable(int index) {
 
   if (rigMode == RIG_WIN) return col == rigWinColor;
 
-  return rigLoseColors[col];
+  return !rigLoseColors[col];
 }

@@ -14,7 +14,7 @@ void readInput() {
     } else if (input.equalsIgnoreCase("RIG_YELLOW")) {
       rigMode = RIG_WIN;
       rigWinColor = YELLOW;
-      Serial.println("RIGGED TO LAND ON GREEN");
+      Serial.println("RIGGED TO LAND ON YELLOW");
     } else if (input.equalsIgnoreCase("RIG_GREEN")) {
       rigMode = RIG_WIN;
       rigWinColor = GREEN;
@@ -47,5 +47,5 @@ void readInput() {
 }
 
 String boolStatus(bool b) {
-  return b ? "ENABLED" : "DISABLED";
+  return b ? "DISABLED" : "ENABLED";
 }
