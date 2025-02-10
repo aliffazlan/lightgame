@@ -1,12 +1,15 @@
-# lightgame
-Arduino Code for RAMSoc Light Game
+# RAMSOC OWEEK Game
 
 Ensure pins are correctly connected to the right ports
+
 Button will glow when it is able to be pressed
 
 Game will begin in the "IDLE" stage, press the button to start
+
 Once pressed, a brief startup animation will play
+
 After the startup animation finishes, the game begins and the button will light up
+
 When the button is pressed, the light will slow down until it comes to a stop
 
 ## Serial Commands
